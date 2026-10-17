@@ -512,7 +512,7 @@ font_face_async_ready_cb (GObject *object,
                           GAsyncResult *result,
                           gpointer user_data)
 {
-  SushiFontWidget *self = user_data;
+  g_autoptr(SushiFontWidget) self = user_data;
   g_autoptr(GError) error = NULL;
 
   self->face =
@@ -540,7 +540,7 @@ sushi_font_widget_load (SushiFontWidget *self)
                                     self->uri,
                                     self->face_index,
                                     font_face_async_ready_cb,
-                                    self);
+                                    g_object_ref (self));
 }
 
 static void
