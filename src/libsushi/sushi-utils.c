@@ -253,6 +253,7 @@ load_libreoffice (GTask *task)
       NULL, /* to be replaced with flatpak binary */
       "run", "--command=/app/libreoffice/program/soffice",
       "--nofilesystem=host",
+      "--unshare=network",
       NULL, /* to be replaced with filesystem permissions to read document */
       NULL, /* to be replaced with filesystem permissions to write output */
       LIBREOFFICE_FLATPAK,
@@ -263,10 +264,10 @@ load_libreoffice (GTask *task)
     };
 
     flatpak_argv[0] = flatpak_path;
-    flatpak_argv[4] = flatpak_doc;
-    flatpak_argv[5] = flatpak_dir;
-    flatpak_argv[10] = pdf_dir;
-    flatpak_argv[11] = doc_path;
+    flatpak_argv[5] = flatpak_doc;
+    flatpak_argv[6] = flatpak_dir;
+    flatpak_argv[11] = pdf_dir;
+    flatpak_argv[12] = doc_path;
 
     argv = g_strdupv ((gchar **) flatpak_argv);
   } else {
