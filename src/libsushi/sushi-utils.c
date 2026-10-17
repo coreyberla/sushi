@@ -83,7 +83,7 @@ libreoffice_missing_ready_cb (GObject *source,
   }
 
   /* now that we have libreoffice installed, try again loading the document */
-  load_libreoffice (task);
+  load_libreoffice (g_steal_pointer (&task));
 }
 
 static void
@@ -109,7 +109,7 @@ libreoffice_missing (GTask *task)
                           NULL, G_DBUS_CALL_FLAGS_NONE,
                           G_MAXINT, NULL,
                           libreoffice_missing_ready_cb,
-                          g_object_ref (task));
+                          task);
 }
 
 static void
