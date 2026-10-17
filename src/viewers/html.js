@@ -120,12 +120,14 @@ export const Klass = _isAvailable() ? class HTMLRenderer extends Gtk.Box {
     /** @param {string} uri */
     async _tryLaunchUri(uri) {
         const parent = this.get_root();
-        const isFile = GLib.Uri.parse_scheme(uri).toLowerCase() === 'file';
-        if (isFile) {
+        const scheme = GLib.Uri.parse_scheme(uri)?.toLowerCase();
+        if (scheme === 'file') {
             const file = Gio.File.new_for_uri(uri);
             await Gtk.FileLauncher.new(file).launch(parent, this.cancellable);
-        } else {
+        } else if (LAUNCHABLE_URI_SCHEMES.has(scheme)) {
             await Gtk.UriLauncher.new(uri).launch(parent, this.cancellable);
+        } else {
+            throw new Error(`URI scheme '${scheme}' is not allowed`);
         }
     }
 
@@ -133,6 +135,8 @@ export const Klass = _isAvailable() ? class HTMLRenderer extends Gtk.Box {
         return Adw.ToolbarStyle.RAISED_BORDER;
     }
 } : undefined;
+
+const LAUNCHABLE_URI_SCHEMES = new Set(['http', 'https', 'mailto']);
 
 export const contentTypes = _isAvailable() ? ['text/html', 'application/xhtml+xml'] : [];
 
