@@ -97,9 +97,10 @@ const fetchCoverArt = (_file, _tagList, _cancellable) => {
 
         for (const coverFile of coverFiles) {
             try {
-                return _fetchFromFile(coverFile, _cancellable);
-            } catch {
-                continue;
+                return await _fetchFromFile(coverFile, _cancellable);
+            } catch (error) {
+                if (isCancelledError(error))
+                    throw error;
             }
         }
 
