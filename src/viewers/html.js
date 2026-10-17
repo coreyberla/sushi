@@ -44,6 +44,9 @@ export const Klass = _isAvailable() ? class HTMLRenderer extends Gtk.Box {
 
         super(constructProperties);
 
+        // Scripts could get around the remote content blocking
+        this._webView.get_settings().set_enable_javascript(false);
+
         this._webView.connect('create', this._onCreate.bind(this));
 
         this._onUserMessageReceived = this._onUserMessageReceived.bind(this);
@@ -65,6 +68,7 @@ export const Klass = _isAvailable() ? class HTMLRenderer extends Gtk.Box {
 
     _onShowRemoteContentClicked() {
         this._banner.set_revealed(false);
+        this._webView.get_settings().set_enable_javascript(true);
         const message = WebKit.UserMessage.new('Sushi.EnableFetchRemoteResources', null);
         this._webView.get_context().send_message_to_all_extensions(message);
         this._webView.reload();
