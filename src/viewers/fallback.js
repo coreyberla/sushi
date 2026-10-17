@@ -24,6 +24,7 @@ function _getDeepCountAttrs() {
         Gio.FILE_ATTRIBUTE_STANDARD_TYPE,
         Gio.FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
         Gio.FILE_ATTRIBUTE_STANDARD_NAME,
+        Gio.FILE_ATTRIBUTE_UNIX_DEVICE,
         Gio.FILE_ATTRIBUTE_UNIX_INODE,
     ].join(',');
 }
@@ -106,11 +107,13 @@ const loadFile = (_fileToLoad, _fileInfo, _cancellable, _updateCallback) => {
 
     function _deepCountOne(info) {
         const inode = info.get_attribute_uint64(Gio.FILE_ATTRIBUTE_UNIX_INODE);
+        const device = info.get_attribute_uint32(Gio.FILE_ATTRIBUTE_UNIX_DEVICE);
         let isSeen = false;
         if (inode) {
-            isSeen = _seenInodes.has(inode);
+            const key = `${device}:${inode}`;
+            isSeen = _seenInodes.has(key);
             if (!isSeen)
-                _seenInodes.add(inode);
+                _seenInodes.add(key);
         }
 
         const fileType = info.get_file_type();
