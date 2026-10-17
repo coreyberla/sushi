@@ -134,6 +134,22 @@ libreoffice_done_cb (GObject      *object,
 
 #define LIBREOFFICE_FLATPAK "org.libreoffice.LibreOffice"
 
+/* In flatpak's --filesystem syntax, ':' starts the mode suffix (an unknown
+ * suffix is ignored, leaving the mode read-write) and '\' escapes. */
+static gchar *
+escape_flatpak_filesystem_path (const gchar *path)
+{
+  GString *escaped = g_string_new (NULL);
+
+  for (const gchar *p = path; *p != '\0'; p++) {
+    if (*p == ':' || *p == '\\')
+      g_string_append_c (escaped, '\\');
+    g_string_append_c (escaped, *p);
+  }
+
+  return g_string_free (escaped, FALSE);
+}
+
 static gboolean
 check_libreoffice_flatpak (GTask       *task,
                            const gchar *flatpak_path)
@@ -219,8 +235,10 @@ load_libreoffice (GTask *task)
   g_mkdir_with_parents (pdf_dir, 0700);
 
   if (use_flatpak) {
-    g_autofree gchar *flatpak_doc = g_strdup_printf ("--filesystem=%s:ro", doc_path);
-    g_autofree gchar *flatpak_dir = g_strdup_printf ("--filesystem=%s", pdf_dir);
+    g_autofree gchar *escaped_doc_path = escape_flatpak_filesystem_path (doc_path);
+    g_autofree gchar *escaped_pdf_dir = escape_flatpak_filesystem_path (pdf_dir);
+    g_autofree gchar *flatpak_doc = g_strdup_printf ("--filesystem=%s:ro", escaped_doc_path);
+    g_autofree gchar *flatpak_dir = g_strdup_printf ("--filesystem=%s", escaped_pdf_dir);
 
     const gchar *flatpak_argv[] = {
       NULL, /* to be replaced with flatpak binary */
