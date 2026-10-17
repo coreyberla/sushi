@@ -52,6 +52,7 @@ typedef struct {
 
   gboolean checked_libreoffice_flatpak;
   gboolean have_libreoffice_flatpak;
+  gboolean tried_installing_libreoffice;
 } TaskData;
 
 static void
@@ -210,6 +211,14 @@ load_libreoffice (GTask *task)
   if (!use_flatpak) {
     libreoffice_path = g_find_program_in_path ("libreoffice");
     if (libreoffice_path == NULL) {
+      if (data->tried_installing_libreoffice) {
+        g_task_return_new_error (task, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+                                 "LibreOffice is not installed");
+        g_object_unref (task);
+        return;
+      }
+
+      data->tried_installing_libreoffice = TRUE;
       libreoffice_missing (task);
       return;
     }
