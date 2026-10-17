@@ -125,7 +125,7 @@ export class MainWindow extends Adw.ApplicationWindow {
         } else {
             // Window is shown for the first time
             this.#presentTimeoutId.ensureTimeout(
-                GLib.G_PRIORITY_HIGH,
+                GLib.PRIORITY_HIGH,
                 ACCEPTABLE_USER_ACTION_DELAY_IN_MS,
                 () => this.present());
         }
@@ -260,7 +260,7 @@ export class MainWindow extends Adw.ApplicationWindow {
             // Setting the size again after a short delay fixes that.
             if (this.#recentlyReceivedFocus) {
                 this.#retrySetDefaultSizeTimeoutId.addTimeout(
-                    GLib.G_PRIORITY_DEFAULT,
+                    GLib.PRIORITY_DEFAULT,
                     50,
                     () => this.set_default_size(this.#requestedDefaultWidth, this.#requestedDefaultHeight));
             }
