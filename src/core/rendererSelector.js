@@ -47,10 +47,9 @@ const enumerateRenderers = uri => {
             .filter(info => info.get_name().endsWith('.js'))
             .map(info => enumerator.get_child(info).get_uri());
     } catch (error) {
-        if (isGLibError(error, Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
-            return [];
-        else
-            throw error;
+        if (!isGLibError(error, Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
+            console.error(`failed to list renderers in '${uri}': ${error}`);
+        return [];
     }
 };
 
