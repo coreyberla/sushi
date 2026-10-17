@@ -144,10 +144,10 @@ export const Klass = class AudioRenderer extends Adw.Bin {
 
         this._statusPage.set_paintable(this._coverPaintable);
 
-        const disco = Sushi.Discoverer.new(file.get_uri());
-        disco.connect_object(
+        this._disco = Sushi.Discoverer.new(file.get_uri());
+        this._disco.connect_object(
             'tags-changed',
-            () => {
+            disco => {
                 const tag_list = disco.get_tag_list();
                 if (tag_list)
                     this._updateFromTags(tag_list);
@@ -161,6 +161,7 @@ export const Klass = class AudioRenderer extends Adw.Bin {
     stop() {
         this._stream.clear();
         this._coverPaintable.destroy();
+        this._disco = null;
     }
 
     #togglePlay() {
