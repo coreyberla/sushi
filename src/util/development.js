@@ -15,7 +15,7 @@ export const getMesonBuildRoot = () =>
     GLib.getenv('MESON_BUILD_ROOT');
 
 let dumpCounter = 0;
-const dumpDir = GLib.build_filenamev([GLib.get_tmp_dir(), 'sushi-dumps']);
+let dumpDir = null;
 
 const createDump = () => {
     console.debug(`Creating dump #${dumpCounter}`);
@@ -30,8 +30,8 @@ const createDump = () => {
 export const checkInitDumping = () => {
     const intervalSeconds = GLib.getenv('SUSHI_DUMP_INTERVAL_S');
     if (intervalSeconds) {
+        dumpDir = GLib.Dir.make_tmp('sushi-dumps-XXXXXX');
         console.warn(`Heap dumps will be created every ${intervalSeconds} seconds in ${dumpDir} (SUSHI_DUMP_INTERVAL_S is set)`);
-        GLib.mkdir_with_parents(dumpDir, 0o755);
         GLib.timeout_add(
             GLib.PRIORITY_DEFAULT,
             intervalSeconds * 1000,
