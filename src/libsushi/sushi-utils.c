@@ -283,6 +283,10 @@ load_libreoffice (GTask *task)
 
   if (error) {
     g_warning ("Error while spawning libreoffice: %s", error->message);
+    /* Nothing was written, keep any cached PDF */
+    g_clear_pointer (&data->pdf_path, g_free);
+    g_task_return_error (task, g_steal_pointer (&error));
+    g_object_unref (task);
     return;
   }
 
