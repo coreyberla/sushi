@@ -46,7 +46,7 @@ export const Klass = class PdfRenderer extends Adw.Bin {
         if (contentTypes.includes(fileInfo.get_content_type()))
             this._loadFile(file);
         else if (Klass.convertLibreoffice)
-            Klass.convertLibreoffice(this, file);
+            Klass.convertLibreoffice(this, file, fileInfo);
         else
             this.markFailed(new GLib.Error('Unhandled document type'));
 

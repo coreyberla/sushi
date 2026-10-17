@@ -279,6 +279,7 @@ export class MainWindow extends Adw.ApplicationWindow {
                 Gio.FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
                 Gio.FILE_ATTRIBUTE_STANDARD_ICON,
                 Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
+                Gio.FILE_ATTRIBUTE_STANDARD_TARGET_URI,
                 Gio.FILE_ATTRIBUTE_STANDARD_TYPE,
                 Gio.FILE_ATTRIBUTE_TIME_MODIFIED,
                 METADATA_KEY_CUSTOM_ICON,
