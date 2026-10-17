@@ -340,6 +340,8 @@ sushi_discoverer_finalize (GObject *object)
     gst_discoverer_stop (self->disco);
 
   g_clear_object (&self->disco);
+
+  G_OBJECT_CLASS (sushi_discoverer_parent_class)->finalize (object);
 }
 
 const GstTagList *
