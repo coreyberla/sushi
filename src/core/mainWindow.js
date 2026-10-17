@@ -170,7 +170,20 @@ export class MainWindow extends Adw.ApplicationWindow {
             // ignore errors in fallback handler to avoid recursion
             return;
         }
+        this.#fileInfo ??= this.#createPlaceholderFileInfo();
         this.#loadRenderer(new FallbackRenderer(this._file, this.#fileInfo, error));
+    }
+
+    /** Minimal file info for when querying the file failed, so the error
+     *  page can still be shown.
+     *  @returns {Gio.FileInfo} */
+    #createPlaceholderFileInfo() {
+        const fileInfo = new Gio.FileInfo();
+        fileInfo.set_display_name(this._file.get_basename() ?? this._file.get_uri());
+        fileInfo.set_content_type('application/octet-stream');
+        fileInfo.set_file_type(Gio.FileType.UNKNOWN);
+        fileInfo.set_icon(Gio.ThemedIcon.new('text-x-generic'));
+        return fileInfo;
     }
 
     /** @returns {[number, number]} */
@@ -259,6 +272,7 @@ export class MainWindow extends Adw.ApplicationWindow {
     _createRenderer() {
         this._fileQueryCancellable?.cancel();
         this._fileQueryCancellable = new Gio.Cancellable();
+        this.#fileInfo = null;
         this._file.query_info_async(
             [Gio.FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
                 Gio.FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE,

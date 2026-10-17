@@ -206,7 +206,8 @@ export class FallbackRenderer extends Adw.PreferencesPage {
 
         let sizeFormatted;
         if (state.fileInfo.get_file_type() !== Gio.FileType.DIRECTORY) {
-            sizeFormatted = GLib.format_size(state.fileInfo.get_size());
+            if (state.fileInfo.has_attribute(Gio.FILE_ATTRIBUTE_STANDARD_SIZE))
+                sizeFormatted = GLib.format_size(state.fileInfo.get_size());
         } else if (state.totalSize > 0) {
             const count = state.fileItems + state.directoryItems;
             const itemsStr = Format.vprintf(Gettext.ngettext(
@@ -222,8 +223,9 @@ export class FallbackRenderer extends Adw.PreferencesPage {
             this._sizeRow.set_subtitle(sizeFormatted);
 
 
-        const date = GLib.DateTime.new_from_timeval_local(state.fileInfo.get_modification_time());
-        this._modifiedRow.set_subtitle(date.format('%x, %X'));
+        const date = state.fileInfo.get_modification_date_time()?.to_local();
+        if (date)
+            this._modifiedRow.set_subtitle(date.format('%x, %X'));
     }
 
     get button_label() {
