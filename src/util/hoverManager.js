@@ -62,7 +62,10 @@ export class HoverManager {
         if (this._fullscreened === fullscreened)
             return;
         this._fullscreened = fullscreened;
-        this._setRevealed(true);
+        // Show the bars briefly, then hide them like after pointer motion.
+        // Otherwise they stay until the pointer moves, e.g. when toggling
+        // fullscreen with the keyboard.
+        this.#revealTemporarily();
     }
 
     _onMotion(x, y) {
@@ -71,6 +74,10 @@ export class HoverManager {
         this._lastX = x;
         this._lastY = y;
 
+        this.#revealTemporarily();
+    }
+
+    #revealTemporarily() {
         this.#lastTimestamp = GLib.get_monotonic_time();
         this._setRevealed(true);
         this.#ensureTimeout();
